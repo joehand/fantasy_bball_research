@@ -3,6 +3,13 @@
 
 {% block css -%}{{ css.render_css('main') }}{%- endblock %}
 
+{% set navigation_bar = [
+    ('frontend.index', 'index', 'Overview'),
+    ('players.index', 'players', 'Players'),
+] -%}
+
+{% set active_page = active_page|default('index') -%}
+
     {%- block siteheader %}
         <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
          <div class="container-fluid">
@@ -18,9 +25,6 @@
            <div class="navbar-collapse collapse">
              <ul class="nav navbar-nav navbar-right">
                <li><a href="#">Dashboard</a></li>
-               <li><a href="#">Settings</a></li>
-               <li><a href="#">Profile</a></li>
-               <li><a href="#">Help</a></li>
              </ul>
              <form class="navbar-form navbar-right">
                <input type="text" class="form-control" placeholder="Search...">
@@ -33,10 +37,11 @@
     {%- block sidebar %}
     <div class="col-sm-3 col-md-2 sidebar">
         <ul class="nav nav-sidebar">
-          <li class="active"><a href="#">Overview</a></li>
-          <li><a href="#">Reports</a></li>
-          <li><a href="#">Analytics</a></li>
-          <li><a href="#">Export</a></li>
+          {% for route, id, caption in navigation_bar %}
+            <li{% if id == active_page %} class="active"{% endif
+                %}><a href="{{url_for(route)}}">{{ caption }}</a>
+            </li>
+          {%endfor%}
         </ul>
         <ul class="nav nav-sidebar">
           <li><h4>Charts</h4></li>

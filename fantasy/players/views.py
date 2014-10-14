@@ -14,6 +14,8 @@ from flask import (Blueprint, current_app, flash, g, jsonify,
 
 from flask_classy import FlaskView, route
 
+from .models import Player, Team
+
 
 players = Blueprint('players', __name__, url_prefix='/players')
 
@@ -27,6 +29,7 @@ class Players(FlaskView):
     def index(self):
         """ Index page
         """
-        return render_template('frontend/index.html')
+        players = Player.objects()
+        return render_template('players/index.html', players=players)
 
 Players.register(players)

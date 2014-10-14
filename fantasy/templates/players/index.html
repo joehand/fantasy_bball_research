@@ -1,0 +1,37 @@
+{% extends "frontend/_base.html" %}
+{% set active_page = "players" %}
+
+{%- block content -%}
+
+    <table class="table table-striped table-hover">
+        <tr>
+            <th>PLAYER</th>
+            <th>POSITION</th>
+            <th>TEAM</th>
+            <th>Rank</th>
+            {% for key, item in players.first().zscores['AVG'].items() %}
+                <th>{{key}}</th>
+            {% endfor %}
+    {% for player in players %}
+        <tr>
+            <td>{{player.name}}</td>
+            {% if player.pos == 'PG' %}
+            <td><span class="label label-default">{{player.pos}}</span></td>
+            {% elif player.pos == 'SG' %}
+            <td><span class="label label-primary">{{player.pos}}</span></td>
+            {% elif player.pos == 'SF' %}
+            <td><span class="label label-success">{{player.pos}}</span></td>
+            {% elif player.pos == 'PF' %}
+            <td><span class="label label-info">{{player.pos}}</span></td>
+            {% elif player.pos == 'C' %}
+            <td><span class="label label-warning">{{player.pos}}</span></td>
+            {% endif %}
+            <td>{{player.team.name|upper}}</td>
+            <td>{{player.rank}}</td>
+            {% for key, item in player.zscores['AVG'].items() %}
+                <td>{{item|round(2)}}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+  </table>
+{%- endblock -%}

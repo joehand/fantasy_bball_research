@@ -1,0 +1,66 @@
+{% import "macros/_css.html" as css %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="ClearType" content="true">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- DNS prefetch -->
+        <link rel="dns-prefetch" href="//ajax.googleapis.com">
+        {%- if config.PRODUCTION %}
+        <link rel="dns-prefetch" href="//s3.amazonaws.com">
+        {%- endif %}
+
+        <title>{% block title %}Fantasy Basketball{% endblock title %}</title>
+        <meta name="description" content="{% block description %}{% endblock description %}">
+
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+        <!-- Styles -->
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+        {% block css -%}{{ css.render_css('main') }}{%- endblock %}
+    </head>
+    <body class="{% block body_class %}{% endblock %}">
+        <div role="document" class="document">
+        {%- block siteheader -%}
+        {% endblock siteheader -%}
+
+        {%- block main %}
+            <div class="container-fluid">
+              <div class="row">
+                  {%- block sidebar -%}
+                  {%- endblock sidebar %}
+                <div class="page-content col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                {%- with messages = get_flashed_messages() -%}
+                      {% if messages %}
+                        <ul class="flashes well">
+                        {% for message in messages %}
+                            <li>{{ message | safe}}</li>
+                        {% endfor %}
+                        </ul>
+                      {% endif %}
+                {%- endwith -%}
+                {%- block content -%}
+                {%- endblock content %}
+                </div> <!-- .page-content  -->
+            </div> <!-- container  -->
+            {%- block sitefooter %}
+            {% endblock sitefooter -%}
+        {%- endblock main %}
+        </div> <!-- document -->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    {%- block footer_js -%}
+    {%- endblock footer_js %}
+    </body>
+</html>

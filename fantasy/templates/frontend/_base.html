@@ -5,7 +5,19 @@
 
 {% set navigation_bar = [
     ('frontend.index', 'index', 'Overview'),
-    ('players.index', 'players', 'Players'),
+    ('players.draft', 'draft', 'Draft'),
+] -%}
+
+{% set players_bar = [
+    ('players.index', 'players', '2014 Stats'),
+    ('players.index', 'projections', 'Projections'),
+    ('players.index', 'zscores', 'Z Scores'),
+] -%}
+
+{% set plot_bar = [
+    ('frontend.plot', 'plot', 'Total Z Score'),
+    ('frontend.plot', 'plot_big', ' Big Z Score'),
+    ('frontend.plot', 'plot_diff', 'Z Score Diff'),
 ] -%}
 
 {% set active_page = active_page|default('index') -%}
@@ -24,11 +36,8 @@
            </div>
            <div class="navbar-collapse collapse">
              <ul class="nav navbar-nav navbar-right">
-               <li><a href="#">Dashboard</a></li>
+                <li><a href="{{url_for('players.draft', update=True)}}">Draft Update</a></li>
              </ul>
-             <form class="navbar-form navbar-right">
-               <input type="text" class="form-control" placeholder="Search...">
-             </form>
            </div>
          </div>
         </div>
@@ -44,12 +53,20 @@
           {%endfor%}
         </ul>
         <ul class="nav nav-sidebar">
-          <li><h4>Charts</h4></li>
-          <li><a href="">Nav item</a></li>
-          <li><a href="">Nav item again</a></li>
-          <li><a href="">One more nav</a></li>
-          <li><a href="">Another nav item</a></li>
-          <li><a href="">More navigation</a></li>
+          <li><h4>Player Tables</h4></li>
+            {% for route, id, caption in players_bar %}
+              <li{% if id == active_page %} class="active"{% endif
+                  %}><a href="{{url_for(route)}}">{{ caption }}</a>
+              </li>
+            {%endfor%}
+        </ul>
+        <ul class="nav nav-sidebar">
+          <li><h4>Plots</h4></li>
+            {% for route, id, caption in plot_bar %}
+              <li{% if id == active_page %} class="active"{% endif
+                  %}><a href="{{url_for(route)}}">{{ caption }}</a>
+              </li>
+            {%endfor%}
         </ul>
     </div>
     {%- endblock sidebar %}

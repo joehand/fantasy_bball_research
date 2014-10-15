@@ -49,7 +49,7 @@ class DevelopmentConfig(Config):
 
     # MongoDB Config
     MONGODB_SETTINGS = {
-        'db': 'fantasy_ball',
+        'db': 'fantasy_ball_db',
         'host':'localhost',
         'port':27017,
         'tz_aware':True

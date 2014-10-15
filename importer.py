@@ -88,12 +88,10 @@ class PlayerImporter():
             df[col + '_Zscore'] = (df[col] - df[col].mean())/df[col].std(ddof=0)
 
         df[total_zscore_col] = df.filter(regex=col_set + '_Zscore').sum(axis=1)
-        df[total_zscore_col] = df[total_zscore_col] + abs(df[total_zscore_col].min())
         if calc_big:
             big_cols = [s + '_Zscore' for s in cols]
             big_cols = [col for col in big_cols if not 'AST' in col if not '3P' in col]
             df[big_zscore_col] = df[big_cols].sum(axis=1)
-            df[big_zscore_col] = df[big_zscore_col] + abs(df[big_zscore_col].min())
             df['DIFF' + col_set + '_Zscore'] = (df[big_zscore_col] - df[total_zscore_col])
 
         return df

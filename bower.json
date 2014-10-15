@@ -1,0 +1,19 @@
+{
+  "name": "fantasy",
+  "version": "0.0.0",
+  "authors": [
+    "Joe Hand <joe.a.hand@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "instantclick": "~3.0.1"
+  }
+}

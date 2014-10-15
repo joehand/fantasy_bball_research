@@ -1,0 +1,7 @@
+{% extends "frontend/_base.html" %}
+{% set active_page = "plot" %}
+
+{%- block content -%}
+{% set plot = "plots/" + plot_file %}
+{% include plot %}
+{%- endblock -%}

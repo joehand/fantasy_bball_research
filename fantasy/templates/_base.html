@@ -23,7 +23,6 @@
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
         <!-- Optional theme -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 
         {% block css -%}{{ css.render_css('main') }}{%- endblock %}
     </head>
@@ -40,11 +39,14 @@
                 <div class="page-content col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
                 {%- with messages = get_flashed_messages() -%}
                       {% if messages %}
-                        <ul class="flashes well">
+                        <div class="flashes ">
                         {% for message in messages %}
-                            <li>{{ message | safe}}</li>
+                            <div class="alert alert-info alert-dismissible" role="alert">
+                              <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                              {{ message | safe}}
+                            </div>
                         {% endfor %}
-                        </ul>
+                        </div>
                       {% endif %}
                 {%- endwith -%}
                 {%- block content -%}
@@ -60,6 +62,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="{{url_for('static', filename='bower_components/instantclick/instantclick.js')}}" data-no-instant></script>
+    <script data-no-instant>InstantClick.init();</script>
     {%- block footer_js -%}
     {%- endblock footer_js %}
     </body>

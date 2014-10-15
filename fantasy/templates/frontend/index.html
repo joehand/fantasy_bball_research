@@ -1,0 +1,41 @@
+{% extends "frontend/_base.html" %}
+
+{%- block content -%}
+    <h1 class="page-header">Dashboard</h1>
+
+    <div class="row">
+        <div class="progress">
+            <div class="progress-bar progress-bar-danger" style="width: {{data.percent.pg}}%">
+                {{data.pg_undraft|length}}
+            </div>
+            <div class="progress-bar progress-bar-primary" style="width: {{data.percent.sg}}%">
+                {{data.sg_undraft|length}}
+            </div>
+            <div class="progress-bar progress-bar-success" style="width: {{data.percent.sf}}%">
+                {{data.sf_undraft|length}}
+            </div>
+            <div class="progress-bar progress-bar-info" style="width: {{data.percent.pf}}%">
+                {{data.pf_undraft|length}}
+            </div>
+            <div class="progress-bar progress-bar-warning" style="width: {{data.percent.c}}%">
+                {{data.c_undraft|length}}
+            </div>
+        </div>
+    </div>
+
+    <div class="row ">
+        <div class="col-sm-6">
+          <h4>Avg. $/Z-Score</h4>
+          <span class="text-muted">$4.90</span>
+        </div>
+        <div class="col-sm-6">
+          <h4>Players Left (Total: {{data.undraft|length}})</h4>
+          <div class="text-muted">PG: {{data.pg_undraft|length}}</div>
+          <div class="text-muted">SG: {{data.sg_undraft|length}}</div>
+          <div class="text-muted">SF: {{data.sf_undraft|length}}</div>
+          <div class="text-muted">PF: {{data.pf_undraft|length}}</div>
+          <div class="text-muted">C: {{data.c_undraft|length}}</div>
+        </div>
+    </div>
+
+{%- endblock -%}

@@ -17,18 +17,8 @@
             {% endfor %}
     {% for player in players %}
         <tr>
-            <td>{{player.name}}</td>
-            {% if player.pos == 'PG' %}
-            <td><span class="label label-danger">{{player.pos}}</span></td>
-            {% elif player.pos == 'SG' %}
-            <td><span class="label label-primary">{{player.pos}}</span></td>
-            {% elif player.pos == 'SF' %}
-            <td><span class="label label-success">{{player.pos}}</span></td>
-            {% elif player.pos == 'PF' %}
-            <td><span class="label label-info">{{player.pos}}</span></td>
-            {% elif player.pos == 'C' %}
-            <td><span class="label label-warning">{{player.pos}}</span></td>
-            {% endif %}
+            <td>{% include 'partials/_player.html' %}</td>
+            <td>{% include 'partials/_pos_label.html' %}</td>
             <td>{{player.team.name|upper}}</td>
             <td>{{player.rank}}</td>
             {% for key, item in  player.sorted_stats %}

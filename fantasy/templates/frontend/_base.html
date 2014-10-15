@@ -11,7 +11,7 @@
 {% set players_bar = [
     ('players.index', 'players', '2014 Stats'),
     ('players.index', 'projections', 'Projections'),
-    ('players.index', 'zscores', 'Z Scores'),
+    ('players.zscore', 'zscore', 'Z Scores'),
 ] -%}
 
 {% set plot_bar = [
@@ -36,7 +36,7 @@
            </div>
            <div class="navbar-collapse collapse">
              <ul class="nav navbar-nav navbar-right">
-                <li><a href="{{url_for('players.draft', update=True)}}" data-no-instant>Draft Update</a></li>
+                <li><a href="{{url_for('players.draft', update=True, next=request.url_root)}}" data-no-instant>Draft Update</a></li>
              </ul>
            </div>
          </div>

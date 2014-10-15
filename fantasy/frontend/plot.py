@@ -1,7 +1,5 @@
 import os
 
-from flask import current_app
-
 import mpld3
 import matplotlib.pyplot as plt
 import seaborn as sns

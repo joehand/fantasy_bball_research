@@ -35,11 +35,14 @@
                   {%- block sidebar -%}
                   {%- endblock sidebar %}
                 <div class="page-content col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                {%- with messages = get_flashed_messages() -%}
+                {%- with messages = get_flashed_messages(with_categories=true) -%}
                       {% if messages %}
                         <div class="flashes ">
-                        {% for message in messages %}
-                            <div class="alert alert-info alert-dismissible" role="alert">
+                        {% for category, message in messages %}
+                            {% if category == 'message' %}
+                             {% set category = 'info' %}
+                            {% endif %}
+                            <div class="alert alert-{{category}} alert-dismissible" role="alert">
                               <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                               {{ message | safe}}
                             </div>

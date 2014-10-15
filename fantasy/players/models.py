@@ -51,16 +51,45 @@ class Player(db.Document):
     owner = db.StringField()
     draft_pos = db.StringField()
     rank_big = db.IntField()
+    adj_tot_zscore = db.FloatField()
+    adj_big_zscore = db.FloatField()
 
     meta = {
         'ordering': ['rank']
     }
 
     def clean(self):
+        if self.keep != True:
+            self.keep = False
         self.rank_big = self.set_rank_big()
+        min_tot_zscore = self.min_total_zscore()
+        min_big_zscore = self.min_big_zscore()
+
+        self.adj_tot_zscore = self.tot_zscore + abs(min_tot_zscore)
+        self.adj_big_zscore = self.big_zscore + abs(min_big_zscore)
 
     def set_rank_big(self):
         return self.ranks['RANK_BIG']
+
+    @property
+    def tot_zscore(self):
+        return self.zscores['AVG']['TOT_AVG_Zscore']
+
+    @property
+    def big_zscore(self):
+        return self.zscores['AVG']['BIG_AVG_Zscore']
+
+    @property
+    def dollar_tot_zscore(self):
+        if self.drafted:
+            return float(self.price)/self.adj_tot_zscore
+        return None
+
+    @property
+    def dollar_big_zscore(self):
+        if self.drafted:
+            return float(self.price)/self.adj_big_zscore
+        return None
 
     @property
     def sorted_stats(self):
@@ -74,6 +103,15 @@ class Player(db.Document):
         stats = {key.split('_')[0]:val for key, val in self.proj['AVG'].items()}
         return list((i, stats.get(i)) for i in stat_order)
 
+    @classmethod
+    def min_total_zscore(cls):
+        lowest = cls.objects().order_by('-rank').first()
+        return lowest.tot_zscore
+
+    @classmethod
+    def min_big_zscore(cls):
+        lowest = cls.objects().order_by('-rank_big').first()
+        return lowest.big_zscore
 
     def flatten(self):
         """ MongoDB Object to JSON Object

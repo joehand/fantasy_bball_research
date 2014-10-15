@@ -1,0 +1,11 @@
+{% if player.pos == 'PG' %}
+<span class="label label-danger {{extra_pos_class}}">{{player.pos}}</span>
+{% elif player.pos == 'SG' %}
+<span class="label label-primary {{extra_pos_class}}">{{player.pos}}</span>
+{% elif player.pos == 'SF' %}
+<span class="label label-success {{extra_pos_class}}">{{player.pos}}</span>
+{% elif player.pos == 'PF' %}
+<span class="label label-info {{extra_pos_class}}">{{player.pos}}</span>
+{% elif player.pos == 'C' %}
+<span class="label label-warning {{extra_pos_class}}">{{player.pos}}</span>
+{% endif %}

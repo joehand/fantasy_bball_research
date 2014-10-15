@@ -3,37 +3,52 @@
 {%- block content -%}
 
     <div class="page-header">
-    <h1>{{player.name}} <small>
-        {% if player.pos == 'PG' %}
-        <span class="label label-danger">{{player.pos}}</span>
-        {% elif player.pos == 'SG' %}
-        <span class="label label-primary">{{player.pos}}</span>
-        {% elif player.pos == 'SF' %}
-        <span class="label label-success">{{player.pos}}</span>
-        {% elif player.pos == 'PF' %}
-        <span class="label label-info">{{player.pos}}</span>
-        {% elif player.pos == 'C' %}
-        <span class="label label-warning">{{player.pos}}</span>
-        {% endif %}
-     ({{player.team.name}})</small></h1>
+    <h3 class="pull-right">{{player.team.name}}</h3>
+    <h1>{{player.name}} <small>{% include 'partials/_pos_label.html' %}</small></h1>
     </div>
-    <table class="table table-striped table-hover">
-        <tr>
-            <th>Data</th>
-            {% for key, item in  player.sorted_stats %}
-                <th>{{key}}</th>
-            {% endfor %}
-        <tr>
-            <th>2015 AVG Projections</th>
-            {% for key, item in player.sorted_proj %}
-                <td>{{item|round(2)}}</td>
-            {% endfor %}
-        </tr>
-        <tr>
-            <th>2014 Stats</th>
-            {% for key, item in player.sorted_stats %}
-                <td>{{item|round(2)}}</td>
-            {% endfor %}
-        </tr>
-  </table>
+    <div class="panel {% if player.drafted %}panel-warning{% else %} panel-success{% endif %}">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            {% if player.drafted %}
+                <h5>Drafted by <b>{{player.owner}}</b> for <b>${{player.price}}</b></h5>
+            {% else %}
+                <h5>Available!</h5>
+            {% endif %}
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-4">
+                </div>
+                <div class="col-sm-4">
+                  <h5>Total Z-Score: <span class="text-muted">{{player.tot_zscore|round(2)}}</span></h5>
+                </div>
+                <div class="col-sm-4">
+                  <h5>Big Z-Score: <span class="text-muted">{{player.big_zscore|round(2)}}</span></h5>
+                </div>
+            </div>
+        </div>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th></th>
+                {% for key, item in  player.sorted_stats %}
+                    <th>{{key}}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tr>
+                <th>2015 AVG Projections</th>
+                {% for key, item in player.sorted_proj %}
+                    <td>{{item|round(2)}}</td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>2014 Stats</th>
+                {% for key, item in player.sorted_stats %}
+                    <td>{{item|round(2)}}</td>
+                {% endfor %}
+            </tr>
+        </table>
+    </div>
+
 {%- endblock -%}

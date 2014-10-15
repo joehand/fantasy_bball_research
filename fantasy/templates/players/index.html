@@ -12,14 +12,14 @@
             <th>POSITION</th>
             <th>TEAM</th>
             <th>Rank</th>
-            {% for key, item in players.first().stats.items() %}
-                <th>{{key.split('_')[0]}}</th>
+            {% for key, item in  players[0].sorted_stats %}
+                <th>{{key}}</th>
             {% endfor %}
     {% for player in players %}
         <tr>
             <td>{{player.name}}</td>
             {% if player.pos == 'PG' %}
-            <td><span class="label label-default">{{player.pos}}</span></td>
+            <td><span class="label label-danger">{{player.pos}}</span></td>
             {% elif player.pos == 'SG' %}
             <td><span class="label label-primary">{{player.pos}}</span></td>
             {% elif player.pos == 'SF' %}
@@ -31,7 +31,7 @@
             {% endif %}
             <td>{{player.team.name|upper}}</td>
             <td>{{player.rank}}</td>
-            {% for key, item in player.stats.items() %}
+            {% for key, item in  player.sorted_stats %}
                 <td>{{item|round(2)}}</td>
             {% endfor %}
         </tr>

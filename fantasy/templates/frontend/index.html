@@ -1,9 +1,12 @@
 {% extends "frontend/_base.html" %}
 
+{% set num_players = 10 %}
+
 {%- block content -%}
     <h1 class="page-header">Dashboard</h1>
 
     <div class="row">
+        <h4>Players Left (Total: {{data.undraft|length}})</h4>
         <div class="progress">
             <div class="progress-bar progress-bar-danger" style="width: {{data.percent.pg}}%">
                 {{data.pg_undraft|length}}
@@ -24,18 +27,59 @@
     </div>
 
     <div class="row ">
-        <div class="col-sm-6">
+        <div class="col-sm-4">
           <h4>Avg. $/Z-Score</h4>
           <span class="text-muted">$4.90</span>
         </div>
-        <div class="col-sm-6">
-          <h4>Players Left (Total: {{data.undraft|length}})</h4>
-          <div class="text-muted">PG: {{data.pg_undraft|length}}</div>
-          <div class="text-muted">SG: {{data.sg_undraft|length}}</div>
-          <div class="text-muted">SF: {{data.sf_undraft|length}}</div>
-          <div class="text-muted">PF: {{data.pf_undraft|length}}</div>
-          <div class="text-muted">C: {{data.c_undraft|length}}</div>
+          <div class="col-sm-4">
+            <h4>Top {{num_players}} Players Left</h4>
+            {% for player in data['undraft'][:num_players] %}
+                <div class="row">
+                  <span class="col-sm-1">{{player.rank}}:</span>
+                  <span class="col-sm-8">
+                      <a href="{{url_for('players.player', name=player.name)}}">
+                          {{player.name}}
+                      </a>
+                  </span>
+                  {% if player.pos == 'PG' %}
+                  <span class="col-sm-2 label label-danger">{{player.pos}}</span>
+                  {% elif player.pos == 'SG' %}
+                  <span class="col-sm-2 label label-primary">{{player.pos}}</span>
+                  {% elif player.pos == 'SF' %}
+                  <span class="col-sm-2 label label-success">{{player.pos}}</span>
+                  {% elif player.pos == 'PF' %}
+                  <span class="col-sm-2 label label-info">{{player.pos}}</span>
+                  {% elif player.pos == 'C' %}
+                  <span class="col-sm-2 label label-warning">{{player.pos}}</span>
+                  {% endif %}
+                </div>
+            {% endfor %}
+          </div>
+        <div class="col-sm-4">
+          <h4>Top {{num_players}} Players Left (BIG)</h4>
+          {% for player in data['undraft'].order_by('rank_big')[:num_players] %}
+              <div class="row">
+                <span class="col-sm-1">{{player.rank_big}}:</span>
+                <span class="col-sm-8">
+                    <a href="{{url_for('players.player', name=player.name)}}">
+                        {{player.name}}
+                    </a>
+                </span>
+                {% if player.pos == 'PG' %}
+                <span class="col-sm-2 label label-danger">{{player.pos}}</span>
+                {% elif player.pos == 'SG' %}
+                <span class="col-sm-2 label label-primary">{{player.pos}}</span>
+                {% elif player.pos == 'SF' %}
+                <span class="col-sm-2 label label-success">{{player.pos}}</span>
+                {% elif player.pos == 'PF' %}
+                <span class="col-sm-2 label label-info">{{player.pos}}</span>
+                {% elif player.pos == 'C' %}
+                <span class="col-sm-2 label label-warning">{{player.pos}}</span>
+                {% endif %}
+              </div>
+          {% endfor %}
         </div>
     </div>
+
 
 {%- endblock -%}

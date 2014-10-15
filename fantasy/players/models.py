@@ -50,10 +50,29 @@ class Player(db.Document):
     keep = db.BooleanField(default=False)
     owner = db.StringField()
     draft_pos = db.StringField()
+    rank_big = db.IntField()
 
     meta = {
         'ordering': ['rank']
     }
+
+    def clean(self):
+        self.rank_big = self.set_rank_big()
+
+    def set_rank_big(self):
+        return self.ranks['RANK_BIG']
+
+    @property
+    def sorted_stats(self):
+        stat_order = ['MIN', 'PTS', 'REB', 'BLK', 'STL', 'AST', '3PM']
+        stats = {key.split('_')[0]:val for key, val in self.stats.items()}
+        return list((i, stats.get(i)) for i in stat_order)
+
+    @property
+    def sorted_proj(self):
+        stat_order = ['MIN', 'PTS', 'REB', 'BLK', 'STL', 'AST', '3PM']
+        stats = {key.split('_')[0]:val for key, val in self.proj['AVG'].items()}
+        return list((i, stats.get(i)) for i in stat_order)
 
 
     def flatten(self):

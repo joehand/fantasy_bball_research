@@ -2,6 +2,6 @@
     {%- assets filters="less, cssutils", depends=('css/*.less'),
       output="build/" + css_name + ".%(version)s.min.css",
       "css/" + css_name + ".less" -%}
-        <link rel="stylesheet" href="{{ ASSET_URL }}">
+        <link rel="stylesheet" href="{{ ASSET_URL }}" data-no-instant>
     {%- endassets -%}
 {%- endmacro -%}

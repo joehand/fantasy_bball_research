@@ -15,9 +15,9 @@
 ] -%}
 
 {% set plot_bar = [
-    ('frontend.plot', 'plot', 'Total Z Score'),
-    ('frontend.plot', 'plot_big', ' Big Z Score'),
-    ('frontend.plot', 'plot_diff', 'Z Score Diff'),
+    ('frontend.plot','all', 'plot_all', 'Total Z Score'),
+    ('frontend.plot','big', 'plot_big', ' Big Z Score'),
+    ('frontend.plot','diff', 'plot_diff', 'Diff Z Score'),
 ] -%}
 
 {% set active_page = active_page|default('index') -%}
@@ -36,7 +36,7 @@
            </div>
            <div class="navbar-collapse collapse">
              <ul class="nav navbar-nav navbar-right">
-                <li><a href="{{url_for('players.draft', update=True)}}">Draft Update</a></li>
+                <li><a href="{{url_for('players.draft', update=True)}}" data-no-instant>Draft Update</a></li>
              </ul>
            </div>
          </div>
@@ -61,10 +61,10 @@
             {%endfor%}
         </ul>
         <ul class="nav nav-sidebar">
-          <li><h4>Plots</h4></li>
-            {% for route, id, caption in plot_bar %}
+          <li><h4>Z Score Plots</h4></li>
+            {% for route, var, id, caption in plot_bar %}
               <li{% if id == active_page %} class="active"{% endif
-                  %}><a href="{{url_for(route)}}">{{ caption }}</a>
+                  %}><a href="{{url_for(route, name=var)}}">{{ caption |safe}}</a>
               </li>
             {%endfor%}
         </ul>

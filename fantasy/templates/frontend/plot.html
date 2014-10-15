@@ -1,7 +1,30 @@
 {% extends "frontend/_base.html" %}
-{% set active_page = "plot" %}
+{% set plot_name = plot_file.split('.')[0] %}
+{% set active_page = 'plot_'+plot_name %}
 
 {%- block content -%}
-{% set plot = "plots/" + plot_file %}
-{% include plot %}
+    <div class="page-header">
+    <h1>{{plot_name|upper}} Plot
+        <small>
+        <a href="{{url_for('.plot', name=plot_name, update=True)}}" data-no-instant>(Update Data)</a>
+        </small>
+    </h1>
+    </div>
+    <!-- Nav tabs -->
+    <ul class="nav  nav-pills" role="tablist">
+      <li class="active"><a href="#all" role="tab" data-toggle="tab">All Players</a></li>
+      <li><a href="#undrafted" role="tab" data-toggle="tab">Undrafted Players</a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div class="tab-pane fade active in" id="all">
+          {% set plot = "plots/" + plot_file %}
+          {% include plot %}
+      </div>
+      <div class="tab-pane fade" id="undrafted">
+          {% set plot = "plots/undrafted_" + plot_file %}
+          {% include plot %}
+      </div>
+    </div>
 {%- endblock -%}

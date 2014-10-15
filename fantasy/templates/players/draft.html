@@ -5,7 +5,7 @@
     <div class="page-header">
     <h1>Drafted Players
         <small>
-        <a href="{{url_for('players.draft', update=True)}}">(Update Data)</a>
+        <a href="{{url_for('players.draft', update=True)}}" data-no-instant>(Update Data)</a>
         </small>
     </h1>
     </div>
@@ -21,7 +21,7 @@
         <tr>
             <td><a href="{{url_for('.player', name=player.name)}}">{{player.name}}</a></td>
             {% if player.pos == 'PG' %}
-            <td><span class="label label-default">{{player.pos}}</span></td>
+            <td><span class="label label-danger">{{player.pos}}</span></td>
             {% elif player.pos == 'SG' %}
             <td><span class="label label-primary">{{player.pos}}</span></td>
             {% elif player.pos == 'SF' %}

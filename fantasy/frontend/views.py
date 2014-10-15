@@ -53,10 +53,10 @@ class Frontend(FlaskView):
                 'c': 100 * (len(c)/len(undrafted)),
             }
         }
-        return render_template('frontend/index.html', data=data)
+        return render_template('frontend/index.html', players=players,data=data)
 
     @route('/plot/', endpoint='plot')
-    @route('/plot/<name>', endpoint='plot')
+    @route('/plot/<name>/', endpoint='plot')
     def plot(self, name=None):
         """ Index page
         """
@@ -68,6 +68,13 @@ class Frontend(FlaskView):
                 os.path.exists(os.path.join(SAVE_DIR, plot_file))):
             players = Player.objects()
             plot_file = create_plot(players, plot=name)
+
+        plot_file2 = 'undrafted_' + name + '.html'
+        if (request.args.get('update') or not
+                        os.path.exists(os.path.join(SAVE_DIR, plot_file2))):
+            players = Player.objects()
+            plot_file2 = create_plot(players, plot='undrafted_' + name)
+
         return render_template('frontend/plot.html', plot_file=plot_file)
 
 Frontend.register(frontend)

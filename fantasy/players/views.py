@@ -19,6 +19,7 @@ import requests
 import pandas as pd
 
 from .models import Player, Team
+from ..frontend.plot import update_all_plots
 
 DRAFT_SHEET_URL = 'https://docs.google.com/spreadsheet/ccc?key=19YpHBaqzp4uccm1q7BgT3ssC_U_TtPaP705xUsHIxN0&gid=1178982124&output=csv'
 
@@ -67,6 +68,10 @@ class Players(FlaskView):
             df['PRICE'] = df['PRICE'].apply(lambda x: x.replace('$','')).astype(int)
             df['DRAFTED'] = True
             df.apply(update_draft_data, axis=1)
+
+            players = Player.objects()
+
+            update_all_plots(players)
 
             flash('Player Data Updated for draft')
         players = Player.objects(drafted=True)

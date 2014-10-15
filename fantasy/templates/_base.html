@@ -21,9 +21,7 @@
 
         <!-- Styles -->
         <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-        <!-- Optional theme -->
-
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" data-no-instant>
         {% block css -%}{{ css.render_css('main') }}{%- endblock %}
     </head>
     <body class="{% block body_class %}{% endblock %}">
@@ -59,9 +57,9 @@
         </div> <!-- document -->
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" data-no-instant></script>
     <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" data-no-instant></script>
     <script src="{{url_for('static', filename='bower_components/instantclick/instantclick.js')}}" data-no-instant></script>
     <script data-no-instant>InstantClick.init();</script>
     {%- block footer_js -%}

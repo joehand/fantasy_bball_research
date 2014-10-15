@@ -3,33 +3,35 @@
 {%- block content -%}
 
     <div class="page-header">
-    <h1>{{player.name}} <small>{{player.pos}} ({{player.team.name}})</small></h1>
+    <h1>{{player.name}} <small>
+        {% if player.pos == 'PG' %}
+        <span class="label label-danger">{{player.pos}}</span>
+        {% elif player.pos == 'SG' %}
+        <span class="label label-primary">{{player.pos}}</span>
+        {% elif player.pos == 'SF' %}
+        <span class="label label-success">{{player.pos}}</span>
+        {% elif player.pos == 'PF' %}
+        <span class="label label-info">{{player.pos}}</span>
+        {% elif player.pos == 'C' %}
+        <span class="label label-warning">{{player.pos}}</span>
+        {% endif %}
+     ({{player.team.name}})</small></h1>
     </div>
     <table class="table table-striped table-hover">
         <tr>
-            <th>PLAYER</th>
-            <th>POSITION</th>
-            <th>TEAM</th>
-            <th>Rank</th>
-            {% for key, item in player.stats.items() %}
-                <th>{{key.split('_')[0]}}</th>
+            <th>Data</th>
+            {% for key, item in  player.sorted_stats %}
+                <th>{{key}}</th>
             {% endfor %}
         <tr>
-            <td>{{player.name}}</td>
-            {% if player.pos == 'PG' %}
-            <td><span class="label label-default">{{player.pos}}</span></td>
-            {% elif player.pos == 'SG' %}
-            <td><span class="label label-primary">{{player.pos}}</span></td>
-            {% elif player.pos == 'SF' %}
-            <td><span class="label label-success">{{player.pos}}</span></td>
-            {% elif player.pos == 'PF' %}
-            <td><span class="label label-info">{{player.pos}}</span></td>
-            {% elif player.pos == 'C' %}
-            <td><span class="label label-warning">{{player.pos}}</span></td>
-            {% endif %}
-            <td>{{player.team.name|upper}}</td>
-            <td>{{player.rank}}</td>
-            {% for key, item in player.stats.items() %}
+            <th>2015 AVG Projections</th>
+            {% for key, item in player.sorted_proj %}
+                <td>{{item|round(2)}}</td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <th>2014 Stats</th>
+            {% for key, item in player.sorted_stats %}
                 <td>{{item|round(2)}}</td>
             {% endfor %}
         </tr>

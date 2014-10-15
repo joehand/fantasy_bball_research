@@ -3,7 +3,7 @@
     fantasy.frontend
     ~~~~~~~~~
 
-    Frontend for fantasy 
+    Frontend for fantasy
 
     :copyright: (c) 2014 by Joe Hand.
     :license:

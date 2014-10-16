@@ -6,7 +6,8 @@
     <div class="page-header">
     <h1>2014 Stats <small>{{players|length}} Players</small></h1>
     </div>
-    <table class="table table-striped table-hover">
+    <table class="table table-striped table-hover table-fixed-header">
+        <thead class="header">
         <tr>
             <th>PLAYER</th>
             <th>POSITION</th>
@@ -15,7 +16,10 @@
             {% for key, item in  players[0].sorted_stats %}
                 <th>{{key}}</th>
             {% endfor %}
-    {% for player in players %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for player in players %}
         <tr>
             <td>{% include 'partials/_player.html' %}</td>
             <td>{% include 'partials/_pos_label.html' %}</td>
@@ -25,6 +29,7 @@
                 <td>{{item|round(2)}}</td>
             {% endfor %}
         </tr>
-    {% endfor %}
+        {% endfor %}
+        </tbody>
   </table>
 {%- endblock -%}

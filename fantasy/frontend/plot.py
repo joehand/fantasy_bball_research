@@ -73,6 +73,52 @@ DEFAULTS = {
         'drafted' : False,
         'save_file' : 'undrafted_diff.html',
     },
+    'price' : {
+        'title' : 'Price vs Total Z Score',
+        'x_var' : 'price',
+        'y_var' : 'zscores_AVG_TOT_AVG_Zscore',
+        'y_var2' : 'zscores_2014_TOT_2014_Zscore',
+        'y_err_regex' : '^zscores_([a-zA-Z]+)_TOT',
+        'group' : 'pos',
+        'drafted' : 'drafted',
+        'save_file' : 'price.html',
+        'type':'price',
+        'undrafted_x_var' : 'proj_cost_tot',
+    },
+    'undrafted_price' : {
+        'title' : 'Undrafted Price vs Total Z Score',
+        'x_var' : 'proj_cost_tot',
+        'y_var' : 'zscores_AVG_TOT_AVG_Zscore',
+        'y_var2' : 'zscores_2014_TOT_2014_Zscore',
+        'y_err_regex' : '^zscores_([a-zA-Z]+)_TOT',
+        'group' : 'pos',
+        'drafted' : False,
+        'save_file' : 'undrafted_price.html',
+        'type':'price',
+    },
+    'price_big' : {
+        'title' : 'Price vs Big Z Score',
+        'x_var' : 'price',
+        'y_var' : 'zscores_AVG_BIG_AVG_Zscore',
+        'y_var2' : 'zscores_2014_BIG_2014_Zscore',
+        'y_err_regex' : '^zscores_([a-zA-Z]+)_BIG',
+        'group' : 'pos',
+        'drafted' : 'drafted',
+        'save_file' : 'price_big.html',
+        'type':'price',
+        'undrafted_x_var' : 'proj_cost_big',
+    },
+    'undrafted_price_big' : {
+        'title' : 'Undrafted Price vs Big Z Score',
+        'x_var' : 'proj_cost_big',
+        'y_var' : 'zscores_AVG_BIG_AVG_Zscore',
+        'y_var2' : 'zscores_2014_BIG_2014_Zscore',
+        'y_err_regex' : '^zscores_([a-zA-Z]+)_BIG',
+        'group' : 'pos',
+        'drafted' : False,
+        'save_file' : 'undrafted_price_big.html',
+        'type':'price',
+    },
 }
 
 DISPLAY_STRING = """ <table class="player table table-condensed">
@@ -105,6 +151,16 @@ def create_plot(players, defaults=DEFAULTS, plot='all'):
     group = defaults[plot]['group']
     drafted = defaults[plot]['drafted']
     save_file = defaults[plot]['save_file']
+    if 'type' in defaults[plot]:
+        type = defaults[plot]['type']
+    else:
+        type = None
+
+    if 'undrafted_x_var' in defaults[plot]:
+        undrafted_x_var = defaults[plot]['undrafted_x_var']
+    else:
+        undrafted_x_var = None
+
 
     print('creating plot {}'.format(plot))
 
@@ -144,7 +200,12 @@ def create_plot(players, defaults=DEFAULTS, plot='all'):
                     positions.append(element2)
 
                     players = list(group.apply(lambda x: DISPLAY_STRING.format(**x),axis=1))
+
+                    mpld3.plugins.connect(fig, mpld3.plugins.PointHTMLTooltip(element, players,
+                                                                               voffset=-75, hoffset=10))
             else:
+                if undrafted_x_var: #special x var for undrafted price
+                    x = group[undrafted_x_var]
                 element = ax.scatter(x,y, color=color,
                                      s=90, alpha=0.2, marker='o')
                 element2 = ax.scatter(x,y2, color=color,
@@ -155,16 +216,20 @@ def create_plot(players, defaults=DEFAULTS, plot='all'):
 
                 players = list(group.apply(lambda x: DISPLAY_STRING.format(**x),axis=1))
 
+                mpld3.plugins.connect(fig, mpld3.plugins.PointHTMLTooltip(element, players,
+                                                                           voffset=-75, hoffset=10))
 
 
-            mpld3.plugins.connect(fig, mpld3.plugins.PointHTMLTooltip(element, players,
-                                                           voffset=-75, hoffset=10))
+
 
         elements.append(positions)
         labels.append(name)
 
     ax.set_title(title)
-    ax.set_xlim(0,(df[x_var].max() + 10))
+    if type == 'price':
+        ax.set_xlim((df[x_var].max()+1), 0) # hard axis on price, reversed
+    else:
+        ax.set_xlim(0,(df[x_var].max() + 10))
     mpld3.plugins.connect(fig, mpld3.plugins.InteractiveLegendPlugin(elements, labels))
     mpld3.save_html(fig, SAVE_DIR + '/' + save_file)
     return save_file

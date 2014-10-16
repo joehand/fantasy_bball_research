@@ -102,7 +102,11 @@ body {
   margin-top: 0;
 }
 
-
+table .header-fixed {
+  position: fixed;
+  top: 50px;
+  z-index: 1020; /* 10 less than .navbar-fixed to prevent any overlap */
+}
 
 // Grayscale
 @black:                            #222;

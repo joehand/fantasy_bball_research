@@ -9,6 +9,7 @@
     :license:
 """
 import os
+import re
 
 from flask import (Blueprint, current_app, flash, g, jsonify,
                     redirect, render_template, request, url_for)
@@ -19,7 +20,7 @@ import numpy as np
 from pandas import Series, DataFrame
 
 from .plot import create_plot, SAVE_DIR
-from ..players import Player
+from ..players import Player, LeagueStats
 
 frontend = Blueprint('frontend', __name__, url_prefix='')
 
@@ -35,6 +36,8 @@ class Frontend(FlaskView):
         """ Index page
         """
         players = Player.objects()
+        stats = LeagueStats.objects().first()
+
         drafted = players.filter(drafted=True)
         undrafted = players.filter(drafted=False, rank__lte=120)
         pg =  undrafted.filter(pos='PG')
@@ -42,8 +45,13 @@ class Frontend(FlaskView):
         sf = undrafted.filter(pos='SF')
         pf = undrafted.filter(pos='PF')
         c = undrafted.filter(pos='C')
+        bigs = [player for player in undrafted if player.pos in ['PF', 'C']]
+        bigs_big = [player for player in undrafted.order_by('rank_big') if player.pos in ['PF', 'C']]
+
         data = {
             'undraft': undrafted,
+            'undraft_bigs' : bigs,
+            'undraft_bigs_big' : bigs_big,
             'pg_undraft':pg,
             'sg_undraft':sg,
             'sf_undraft':sf,
@@ -56,12 +64,9 @@ class Frontend(FlaskView):
                 'pf': 100 * (len(pf)/len(undrafted)),
                 'c': 100 * (len(c)/len(undrafted)),
             },
-            'dol_tot': np.mean([player.dollar_tot_zscore for player in drafted]),
-            'dol_big': np.mean([player.dollar_big_zscore for player in drafted]),
-            'proj_dol_tot': (200 * 12)/np.sum([player.adj_tot_zscore for player in players]),
-            'proj_dol_big': (200 * 12)/np.sum([player.adj_big_zscore for player in players]),
         }
-        return render_template('frontend/index.html', players=players,data=data)
+        return render_template('frontend/index.html',
+                players=players, data=data, stats=stats)
 
     @route('/plot/', endpoint='plot')
     @route('/plot/<name>/', endpoint='plot')

@@ -65,6 +65,10 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" data-no-instant></script>
     <script src="{{url_for('static', filename='bower_components/instantclick/instantclick.js')}}" data-no-instant></script>
     <script data-no-instant>InstantClick.init();</script>
+    <script src="{{url_for('static', filename='js/main.js')}}" data-no-instant></script>
+    <script>
+        $('.table-fixed-header').fixedHeader();
+    </script>
     {%- block footer_js -%}
     {%- endblock footer_js %}
     </body>

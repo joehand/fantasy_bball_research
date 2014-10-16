@@ -8,4 +8,4 @@
 """
 
 from .views import players
-from .models import Player, Team
+from .models import Player, Team, LeagueStats

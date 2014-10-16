@@ -10,6 +10,7 @@
 """
 import os
 import re
+from collections import OrderedDict
 
 from flask import (Blueprint, current_app, flash, g, jsonify,
                     redirect, render_template, request, url_for)
@@ -24,6 +25,7 @@ from ..players import Player, LeagueStats
 
 frontend = Blueprint('frontend', __name__, url_prefix='')
 
+STAT_CATS = ['PTS', 'REB', 'BLK','STL', 'AST', '3PM']
 
 class Frontend(FlaskView):
     """ Frontend View Class
@@ -45,8 +47,13 @@ class Frontend(FlaskView):
         sf = undrafted.filter(pos='SF')
         pf = undrafted.filter(pos='PF')
         c = undrafted.filter(pos='C')
-        bigs = [player for player in undrafted if player.pos in ['PF', 'C']]
-        bigs_big = [player for player in undrafted.order_by('rank_big') if player.pos in ['PF', 'C']]
+        bigs = [play for play in undrafted if play.pos in ['PF', 'C']]
+        bigs_big = [play for play in undrafted.order_by('rank_big') if play.pos in ['PF', 'C']]
+
+        zscores_per = OrderedDict()
+        for stat in STAT_CATS:
+            zscores_per[stat] = 100 * (np.sum([play.adj_zscores[stat] for play in undrafted])/
+                                np.sum([play.adj_zscores[stat] for play in players[:120]]))
 
         data = {
             'undraft': undrafted,
@@ -64,6 +71,7 @@ class Frontend(FlaskView):
                 'pf': 100 * (len(pf)/len(undrafted)),
                 'c': 100 * (len(c)/len(undrafted)),
             },
+            'zscores_per' : zscores_per
         }
         return render_template('frontend/index.html',
                 players=players, data=data, stats=stats)
@@ -89,5 +97,17 @@ class Frontend(FlaskView):
             plot_file2 = create_plot(players, plot='undrafted_' + name)
 
         return render_template('frontend/plot.html', plot_file=plot_file)
+
+    @route('/player_form/', endpoint='form', methods=['POST'])
+    def player_form(self):
+        print (request.form)
+        name = request.form['player-name']
+        print(name)
+        return redirect(url_for('players.player', name=name))
+
+    @route('/player_names/')
+    def player_names(self):
+        players = Player.objects()
+        return jsonify(items=[player.name for player in players])
 
 Frontend.register(frontend)

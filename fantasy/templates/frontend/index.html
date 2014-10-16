@@ -6,7 +6,8 @@
     <h1 class="page-header">Dashboard</h1>
 
     <div class="row">
-        <h4>Players Left (Total: {{data.undraft|length}})</h4>
+        <div class=" col-sm-12">
+        <h4>Players (Total: {{data.undraft|length}})</h4>
         <div class="progress">
             <div class="progress-bar progress-bar-danger" style="width: {{data.percent.pg}}%">
                 {{data.pg_undraft|length}}
@@ -24,6 +25,16 @@
                 {{data.c_undraft|length}}
             </div>
         </div>
+        </div>
+        {% for cat, val in data.zscores_per.items() %}
+        <div class=" col-sm-4">
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped" role="progressbar" style="width: {{val}}%;">
+              {{cat}}
+          </div>
+        </div>
+        </div>
+        {% endfor %}
     </div>
 
     <div class="row ">
@@ -33,33 +44,35 @@
         <div class="col-sm-4">
           <h5>Current $/Total Z Score</h5>
           <span class="text-muted">${{stats.dollars_tot_zscore|round(2)}}</span>
-          <h5>Current. $/Big Z-Score</h5>
+          <h5>Current. $/Joe Z-Score</h5>
           <span class="text-muted">${{stats.dollars_big_zscore|round(2)}}</span>
             <h5>Projected $/Total Z Score</h5>
             <span class="text-muted">${{stats.proj_dollars_tot_zscore|round(2)}}</span>
-            <h5>Projected. $/Big Z-Score</h5>
+            <h5>Projected. $/Joe Z-Score</h5>
             <span class="text-muted">${{stats.proj_dollars_big_zscore|round(2)}}</span>
         </div>
           <div class="col-sm-4">
-            <h4>Top {{num_players}} Players Left</h4>
+            <h4>Top {{num_players}} Players</h4>
             {% for player in data['undraft'][:num_players] %}
                 <div class="row">
                   <span class="col-sm-1">{{player.rank}}:</span>
-                  <span class="col-sm-7">{% include 'partials/_player.html' %}</span>
-                  <span class="col-sm-2 text-muted">${{player.proj_cost_tot|round(1)}}</span>
-                  {%set extra_pos_class="col-sm-1"%}
+                  <span class="col-sm-8">{% include 'partials/_player.html' %}
+                      <span class="text-muted">(${{player.proj_cost_tot}})</span>
+                  </span>
+                  {%set extra_pos_class="col-sm-2"%}
                   {% include 'partials/_pos_label.html' %}
                 </div>
             {% endfor %}
           </div>
         <div class="col-sm-4">
-          <h4>Top {{num_players}} Players Left (BIG)</h4>
+          <h4>Top {{num_players}} Players (Joe)</h4>
           {% for player in data['undraft'].order_by('rank_big')[:num_players] %}
               <div class="row">
                 <span class="col-sm-1">{{player.rank_big}}:</span>
-                <span class="col-sm-7">{% include 'partials/_player.html' %}</span>
-                <span class="col-sm-2 text-muted">${{player.proj_cost_big|round(1)}}</span>
-                {%set extra_pos_class="col-sm-1"%}
+                <span class="col-sm-8">{% include 'partials/_player.html' %}
+                    <span class="text-muted">(${{player.proj_cost_big}})</span>
+                </span>
+                {%set extra_pos_class="col-sm-2"%}
                 {% include 'partials/_pos_label.html' %}
               </div>
           {% endfor %}
@@ -75,11 +88,13 @@
         <div class="panel-heading">Top Players By Position (Total Z Score)</div>
         <div class="panel-body">
             <div class="col-sm-4">
-              <h4>Top {{num_players}} PG/SG Left</h4>
+              <h4>Top {{num_players}} PG/SG</h4>
                   {% for player in data['undraft'].filter(pos__contains='G')[:num_players] %}
                       <div class="row">
                         <span class="col-sm-1">{{player.rank}}:</span>
-                        <span class="col-sm-8">{% include 'partials/_player.html' %}</span>
+                        <span class="col-sm-8">{% include 'partials/_player.html' %}
+                            <span class="text-muted">(${{player.proj_cost_tot}})</span>
+                        </span>
                         {%set extra_pos_class="col-sm-2"%}
                         {% include 'partials/_pos_label.html' %}
                       </div>
@@ -87,11 +102,13 @@
             </div>
 
             <div class="col-sm-4">
-              <h4>Top {{num_players}} SG/SF Left</h4>
+              <h4>Top {{num_players}} SG/SF</h4>
                   {% for player in data['undraft'].filter(pos__contains='S')[:num_players] %}
                       <div class="row">
                         <span class="col-sm-1">{{player.rank}}:</span>
-                        <span class="col-sm-8">{% include 'partials/_player.html' %}</span>
+                        <span class="col-sm-8">{% include 'partials/_player.html' %}
+                            <span class="text-muted">(${{player.proj_cost_tot}})</span>
+                        </span>
                         {%set extra_pos_class="col-sm-2"%}
                         {% include 'partials/_pos_label.html' %}
                       </div>
@@ -99,11 +116,13 @@
             </div>
 
             <div class="col-sm-4">
-              <h4>Top {{num_players}} PF/C Left</h4>
+              <h4>Top {{num_players}} PF/C</h4>
                   {% for player in data['undraft_bigs'][:num_players] %}
                       <div class="row">
                         <span class="col-sm-1">{{player.rank}}:</span>
-                        <span class="col-sm-8">{% include 'partials/_player.html' %}</span>
+                        <span class="col-sm-8">{% include 'partials/_player.html' %}
+                            <span class="text-muted">(${{player.proj_cost_tot}})</span>
+                        </span>
                         {%set extra_pos_class="col-sm-2"%}
                         {% include 'partials/_pos_label.html' %}
                       </div>
@@ -117,14 +136,16 @@
 
     <div class="row panel panel-default">
         <!-- Default panel contents -->
-        <div class="panel-heading">Top Players By Position (BIG Z Score)</div>
+        <div class="panel-heading">Top Players By Position (Joe Z Score)</div>
         <div class="panel-body">
             <div class="col-sm-4">
-              <h4>Top {{num_players}} PG/SG Left</h4>
+              <h4>Top {{num_players}} PG/SG</h4>
                   {% for player in data['undraft'].order_by('rank_big').filter(pos__contains='G')[:num_players] %}
                       <div class="row">
                         <span class="col-sm-1">{{player.rank_big}}:</span>
-                        <span class="col-sm-8">{% include 'partials/_player.html' %}</span>
+                        <span class="col-sm-8">{% include 'partials/_player.html' %}
+                            <span class="text-muted">(${{player.proj_cost_big}})</span>
+                        </span>
                         {%set extra_pos_class="col-sm-2"%}
                         {% include 'partials/_pos_label.html' %}
                       </div>
@@ -132,11 +153,13 @@
             </div>
 
             <div class="col-sm-4">
-              <h4>Top {{num_players}} SG/SF Left</h4>
+              <h4>Top {{num_players}} SG/SF</h4>
                   {% for player in data['undraft'].order_by('rank_big').filter(pos__contains='S')[:num_players] %}
                       <div class="row">
                         <span class="col-sm-1">{{player.rank_big}}:</span>
-                        <span class="col-sm-8">{% include 'partials/_player.html' %}</span>
+                        <span class="col-sm-8">{% include 'partials/_player.html' %}
+                            <span class="text-muted">(${{player.proj_cost_big}})</span>
+                        </span>
                         {%set extra_pos_class="col-sm-2"%}
                         {% include 'partials/_pos_label.html' %}
                       </div>
@@ -144,11 +167,13 @@
             </div>
 
             <div class="col-sm-4">
-              <h4>Top {{num_players}} PF/C Left</h4>
+              <h4>Top {{num_players}} PF/C</h4>
                   {% for player in data['undraft_bigs_big'][:num_players] %}
                       <div class="row">
                         <span class="col-sm-1">{{player.rank_big}}:</span>
-                        <span class="col-sm-8">{% include 'partials/_player.html' %}</span>
+                        <span class="col-sm-8">{% include 'partials/_player.html' %}
+                            <span class="text-muted">(${{player.proj_cost_big}})</span>
+                        </span>
                         {%set extra_pos_class="col-sm-2"%}
                         {% include 'partials/_pos_label.html' %}
                       </div>

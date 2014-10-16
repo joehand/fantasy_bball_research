@@ -193,11 +193,13 @@ def create_plot(players, defaults=DEFAULTS, plot='all'):
                 if show_draft:
                     element = ax.scatter(x,y, color=color,
                                          s=60, alpha=0.6, marker='D')
-                    element2 = ax.scatter(x,y2, color=color,
-                                         s=90, alpha=0.5, marker='+')
                     ax.errorbar(x,y,yerr=yerr, linestyle="None", lw='1',color=color, )
                     positions.append(element)
-                    positions.append(element2)
+
+                    if type != 'price':
+                        element2 = ax.scatter(x,y2, color=color,
+                            s=90, alpha=0.5, marker='+')
+                        positions.append(element2)
 
                     players = list(group.apply(lambda x: DISPLAY_STRING.format(**x),axis=1))
 
@@ -208,11 +210,13 @@ def create_plot(players, defaults=DEFAULTS, plot='all'):
                     x = group[undrafted_x_var]
                 element = ax.scatter(x,y, color=color,
                                      s=90, alpha=0.2, marker='o')
-                element2 = ax.scatter(x,y2, color=color,
-                                     s=90, alpha=0.5, marker='+')
                 ax.errorbar(x,y,yerr=yerr, linestyle="None", lw='1',color=color, )
                 positions.append(element)
-                positions.append(element2)
+
+                if type != 'price':
+                    element2 = ax.scatter(x,y2, color=color,
+                            s=90, alpha=0.5, marker='+')
+                    positions.append(element2)
 
                 players = list(group.apply(lambda x: DISPLAY_STRING.format(**x),axis=1))
 

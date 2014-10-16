@@ -16,12 +16,12 @@
 
 {% set price_bar = [
     ('frontend.plot','price', 'plot_price', 'Total Price Plot'),
-    ('frontend.plot','price_big', 'plot_price_big', 'Big Price Plot'),
+    ('frontend.plot','price_big', 'plot_price_big', 'Joe Price Plot'),
 ] -%}
 
 {% set plot_bar = [
     ('frontend.plot','all', 'plot_all', 'Total Z Score'),
-    ('frontend.plot','big', 'plot_big', ' Big Z Score'),
+    ('frontend.plot','big', 'plot_big', ' Joe Z Score'),
     ('frontend.plot','diff', 'plot_diff', 'Diff Z Score'),
 ] -%}
 
@@ -43,6 +43,12 @@
              <ul class="nav navbar-nav navbar-right">
                 <li><a href="{{url_for('players.draft', update=True, next=request.url_root)}}" data-no-instant>Draft Update</a></li>
              </ul>
+             <form class="navbar-form navbar-right" action="{{url_for('frontend.form')}}" method="Post">
+                <input type="text" id="player-search" class="typeahead form-control"
+                        placeholder="Find a player...">
+                <input type="text" name="player-name" id="player-name" style="display:none"/>
+                <input type="submit" style="display:none"/>
+             </form>
            </div>
          </div>
         </div>

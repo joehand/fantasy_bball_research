@@ -15,8 +15,13 @@ import numpy as np
 
 from ..extensions import db
 
-TOTAL_DOLLARS = 200 * 12
-TOTAL_PLAYERS = 10 * 12
+NUM_TEAMS = 12
+PLAYERS_PER_TEAM = 10
+BENCH_PLAYERS = 2
+TOTAL_DOLLARS = 200 * NUM_TEAMS
+TOTAL_PLAYERS = PLAYERS_PER_TEAM * NUM_TEAMS
+
+STAT_CATS = ['PTS', 'REB', 'BLK', 'AST', 'STL', '3PM']
 
 def flatten_dict(root, prefix_keys=True):
     dicts = [([], root)]
@@ -42,6 +47,7 @@ class Team(db.Document):
 class LeagueStats(db.Document):
     min_total_zscore = db.FloatField()
     min_big_zscore = db.FloatField()
+    min_zscores = db.DictField()
     dollars_spent = db.IntField()
     dollars_tot_zscore = db.FloatField()
     dollars_big_zscore = db.FloatField()
@@ -69,6 +75,7 @@ class Player(db.Document):
     rank_big = db.IntField()
     adj_tot_zscore = db.FloatField()
     adj_big_zscore = db.FloatField()
+    adj_zscores = db.DictField()
 
     meta = {
         'ordering': ['rank']
@@ -89,15 +96,20 @@ class Player(db.Document):
                 stats = LeagueStats()
                 stats.save()
             self.league_stats = stats
+            self.calc_player_totals()
 
         self.update_draft_values()
-        self.calc_player_totals()
 
         min_tot_zscore = self.league_stats['min_total_zscore']
         min_big_zscore = self.league_stats['min_big_zscore']
 
         self.adj_tot_zscore = self.tot_zscore + abs(min_tot_zscore)
         self.adj_big_zscore = self.big_zscore + abs(min_big_zscore)
+
+        for cat in STAT_CATS:
+            cat_min_zscore = self.league_stats['min_zscores'][cat]
+            self.adj_zscores[cat] = (self.zscores['AVG'][cat + '_AVG_Zscore']
+                                        + abs(cat_min_zscore))
 
     def set_rank_big(self):
         return self.ranks['RANK_BIG']
@@ -139,17 +151,27 @@ class Player(db.Document):
         return list((i, stats.get(i)) for i in stat_order)
 
     @property
+    def sorted_zscores(self):
+        stat_order = ['PTS', 'REB', 'BLK', 'STL', 'AST', '3PM']
+        stats = {key.split('_')[0]:val for key, val in self.zscores['AVG'].items()}
+        return list((i, stats.get(i)) for i in stat_order)
+
+    @property
     def proj_cost_tot(self):
-        cost = int(self.league_stats['dollars_tot_zscore'] * self.adj_tot_zscore)
-        if cost < 1:
+        # give all bench players $1
+        if self.rank >= (TOTAL_PLAYERS - BENCH_PLAYERS):
             cost = 1
+            return cost
+        cost = int(self.league_stats['dollars_tot_zscore'] * self.adj_tot_zscore)
         return cost
-        
+
     @property
     def proj_cost_big(self):
-        cost =  int(self.league_stats['dollars_big_zscore'] * self.adj_big_zscore)
-        if cost < 1:
+        # give all bench players $1
+        if self.rank_big >= (TOTAL_PLAYERS - BENCH_PLAYERS):
             cost = 1
+            return cost
+        cost =  int(self.league_stats['dollars_big_zscore'] * self.adj_big_zscore)
         return cost
 
     @classmethod
@@ -169,6 +191,7 @@ class Player(db.Document):
     @classmethod
     def calc_player_totals(cls):
         players = cls.objects()
+        stats = LeagueStats.objects().first()
 
         lowest = players.order_by('-rank').first()
         min_total_zscore = lowest.tot_zscore
@@ -176,17 +199,27 @@ class Player(db.Document):
         lowest_big = players.order_by('-rank_big').first()
         min_big_zscore = lowest_big.big_zscore
 
-        proj_dollars_tot_zscore = TOTAL_DOLLARS/np.sum(
-                [play.adj_tot_zscore for play in players[:TOTAL_PLAYERS]])
-
-        proj_dollars_big_zscore = TOTAL_DOLLARS/np.sum(
-                [play.adj_big_zscore for play in players[:TOTAL_PLAYERS]])
-
-        stats = LeagueStats.objects().first()
         stats.min_total_zscore = min_total_zscore
         stats.min_big_zscore = min_big_zscore
+
+        for cat in STAT_CATS:
+            min_cat_zscore = np.min([play.zscores['AVG'][cat + '_AVG_Zscore']
+                                        for play in players])
+            stats.min_zscores[cat] = min_cat_zscore
+
+        # assume bench players sell at $1 each
+        dollars_starting_players = TOTAL_DOLLARS - (BENCH_PLAYERS * NUM_TEAMS * 1)
+        non_bench_players = players[:(TOTAL_PLAYERS - BENCH_PLAYERS)]
+
+        proj_dollars_tot_zscore = dollars_starting_players/np.sum(
+                [play.adj_tot_zscore for play in non_bench_players])
+
+        proj_dollars_big_zscore = dollars_starting_players/np.sum(
+                [play.adj_big_zscore for play in non_bench_players])
+
         stats.proj_dollars_tot_zscore = proj_dollars_tot_zscore
         stats.proj_dollars_big_zscore = proj_dollars_big_zscore
+
         stats.save()
         return stats
 

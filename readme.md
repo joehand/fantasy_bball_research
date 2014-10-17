@@ -5,10 +5,15 @@ I had way too much fun building this. It contains research and data for fantasy 
 
 The best part of this is the web app. It runs with Flask.
 
-## Other Research
+## Other stuff
 
-There are a variety of iPython notebooks with some analysis in them.
+I have data and other iPython analyis notebooks. Maybe I'll add those.
 
-## Data
+# PRETTY PICTURES!!!
 
-Data comes from a variety of sources that I don't own.
+The best part, of course.
+
+![Dashboard](https://dl.dropboxusercontent.com/u/34000599/imgs/dash.png)
+![tables](https://dl.dropboxusercontent.com/u/34000599/imgs/tables.png)
+![zscore](https://dl.dropboxusercontent.com/u/34000599/imgs/z_score_ranks.png)
+![prices](https://dl.dropboxusercontent.com/u/34000599/imgs/prices.png)

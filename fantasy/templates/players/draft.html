@@ -9,26 +9,28 @@
         </small>
     </h1>
     </div>
-    <table class="table table-striped table-hover table-fixed-header">
+    <table class="table table-magic table-striped table-hover table-fixed-header">
         <thead class="header">
         <tr>
+            <th>Rank</th>
+            <th class="hidden">Drafted</th>
             <th>PLAYER</th>
             <th>POSITION</th>
-            <th>Rank</th>
             <th>PRICE</th>
-            <th>Proj $ (Tot)</th>
-            <th>Proj $ (Joe)</th>
-            <th>$/Tot Zscore</th>
-            <th>$/Joe Zscore</th>
+            <th>$P Tot</th>
+            <th>$P Joe</th>
+            <th>$/Tot Z</th>
+            <th>$/Joe Z</th>
             <th>Owner</th>
         </tr>
         </thead>
         <tbody>
     {% for player in players %}
         <tr>
+            <td>{{player.rank}}</td>
+            <td>{% include 'partials/_drafted.html' %}</td>
             <td>{% include 'partials/_player.html' %}</td>
             <td>{% include 'partials/_pos_label.html' %}</td>
-            <td>{{player.rank}}</td>
             <td>${{player.price}}</td>
             <td>${{player.proj_cost_tot|round(1)}}</td>
             <td>${{player.proj_cost_big|round(1)}}</td>

@@ -21,7 +21,8 @@
 
         <!-- Styles -->
         <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" data-no-instant>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/paper/bootstrap.min.css" data-no-instant>
+        <link rel="stylesheet" href="//cdn.datatables.net/plug-ins/a5734b29083/integration/bootstrap/3/dataTables.bootstrap.css" data-no-instant>
         {% block css -%}{{ css.render_css('main') }}{%- endblock %}
     </head>
     <body class="{% block body_class %}{% endblock %}">
@@ -30,10 +31,11 @@
         {% endblock siteheader -%}
 
         {%- block main %}
+        <div id="page-content-wrapper">
             <div class="container-fluid">
               <div class="row">
-                  {%- block sidebar -%}
-                  {%- endblock sidebar %}
+                {%- block sidebar -%}
+                {%- endblock sidebar %}
                 <div class="page-content col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
                 {%- with messages = get_flashed_messages(with_categories=true) -%}
                       {% if messages %}
@@ -56,22 +58,42 @@
             </div> <!-- container  -->
             {%- block sitefooter %}
             {% endblock sitefooter -%}
+        </div>
         {%- endblock main %}
         </div> <!-- document -->
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" data-no-instant></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" data-no-instant></script>
     <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" data-no-instant></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" data-no-instant></script>
+    <script src="//cdn.datatables.net/1.10.3/js/jquery.dataTables.min.js" data-no-instant></script>
+    <script src="//cdn.datatables.net/plug-ins/a5734b29083/integration/bootstrap/3/dataTables.bootstrap.js" data-no-instant></script>
+
+
     <script src="{{url_for('static', filename='bower_components/instantclick/instantclick.js')}}" data-no-instant></script>
     <script src="{{url_for('static', filename='bower_components/typeahead.js/dist/typeahead.bundle.min.js')}}" data-no-instant></script>
-    <script data-no-instant>InstantClick.init();</script>
-
-    <script src="{{url_for('static', filename='js/main.js')}}" data-no-instant></script>
+    <script data-no-instant>
+        InstantClick.init();
+    </script>
+    <script src="{{url_for('static', filename='js/main.js')}}"></script>
     <script>
         $('.table-fixed-header').fixedHeader();
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             $('.table-fixed-tab-header').fixedHeader();
+        });
+        $(document).ready(function() {
+            $('.table-magic').dataTable( {
+                "paging":   false,
+                "ordering": true,
+                "info":     true,
+                "stateSave": true,
+                "columnDefs": [
+                    {
+                        "targets": [1],
+                        "visible": false
+                    }
+                ]
+            });
         });
     </script>
     {%- block footer_js -%}

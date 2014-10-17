@@ -3,6 +3,8 @@
 
 {% block css -%}{{ css.render_css('main') }}{%- endblock %}
 
+{% set active_page = active_page|default('index') -%}
+
 {% set navigation_bar = [
     ('frontend.index', 'index', 'Overview'),
     ('players.draft', 'draft', 'Draft'),
@@ -10,7 +12,7 @@
 
 {% set players_bar = [
     ('players.index', 'players', '2014 Stats'),
-    ('players.index', 'projections', 'Projections'),
+    ('players.projections', 'projections', 'Projections'),
     ('players.zscore', 'zscore', 'Z Scores'),
 ] -%}
 
@@ -25,10 +27,9 @@
     ('frontend.plot','diff', 'plot_diff', 'Diff Z Score'),
 ] -%}
 
-{% set active_page = active_page|default('index') -%}
 
     {%- block siteheader %}
-        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
          <div class="container-fluid">
            <div class="navbar-header">
              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
@@ -37,7 +38,7 @@
                <span class="icon-bar"></span>
                <span class="icon-bar"></span>
              </button>
-             <a class="navbar-brand" href="#">Fantasy Basketball</a>
+             <a class="navbar-brand" href="/">Fantasy Basketball</a>
            </div>
            <div class="navbar-collapse collapse">
              <ul class="nav navbar-nav navbar-right">
@@ -55,39 +56,36 @@
     {%- endblock siteheader -%}
 
     {%- block sidebar %}
-    <div class="col-sm-3 col-md-2 sidebar">
-        <ul class="nav nav-sidebar">
-          {% for route, id, caption in navigation_bar %}
-            <li{% if id == active_page %} class="active"{% endif
-                %}><a href="{{url_for(route)}}">{{ caption }}</a>
-            </li>
-          {%endfor%}
-        </ul>
-        <ul class="nav nav-sidebar">
-          <li><h4>Prices</h4></li>
+        <div class="sidebar col-sm-3 col-md-2">
+            <ul class="nav nav-sidebar">
+            {% for route, id, caption in navigation_bar %}
+                <li{% if id == active_page %} class="active"{% endif
+                    %}><a href="{{url_for(route)}}">{{ caption }}</a>
+                </li>
+            {%endfor%}
+            <li><h4>Prices</h4></li>
+
             {% for route, var, id, caption in price_bar %}
               <li{% if id == active_page %} class="active"{% endif
                   %}><a href="{{url_for(route, name=var)}}">{{ caption |safe}}</a>
               </li>
             {%endfor%}
-        </ul>
-        <ul class="nav nav-sidebar">
-          <li><h4>Z Score Plots</h4></li>
+
+            <li><h4>Z Score Plots</h4></li>
             {% for route, var, id, caption in plot_bar %}
-              <li{% if id == active_page %} class="active"{% endif
+                <li{% if id == active_page %} class="active"{% endif
                   %}><a href="{{url_for(route, name=var)}}">{{ caption |safe}}</a>
-              </li>
+                </li>
             {%endfor%}
-        </ul>
-        <ul class="nav nav-sidebar">
-          <li><h4>Player Tables</h4></li>
+
+            <li><h4>Player Tables</h4></li>
             {% for route, id, caption in players_bar %}
-              <li{% if id == active_page %} class="active"{% endif
+                <li{% if id == active_page %} class="active"{% endif
                   %}><a href="{{url_for(route)}}">{{ caption }}</a>
-              </li>
+                </li>
             {%endfor%}
-        </ul>
-    </div>
+            </ul>
+        </div>
     {%- endblock sidebar %}
 
     {% block sitefooter %}

@@ -17,42 +17,49 @@
     <!-- Tab panes -->
     <div class="tab-content">
       <div class="tab-pane fade active in" id="totals">
-            <table class="table table-striped table-hover table-fixed-header">
+            <table class="table table-magic table-striped table-hover table-fixed-header">
                 <thead class="header">
                 <tr>
+                    <th>Rank</th>
+                    <th class="hidden">Drafted</th>
                     <th>PLAYER</th>
                     <th>POSITION</th>
                     <th>TEAM</th>
-                    <th>Rank</th>
-                    <th>Tot Zscore</th>
-                    <th>Joe Zscore</th>
-                    <th>Proj Tot Price</th>
-                    <th>Proj Joe Price</th>
+                    <th>Tot Z</th>
+                    <th>Joe Z</th>
+                    <th>$P T</th>
+                    <th>$P J</th>
+                    <th>$L T</th>
+                    <th>$L J</th>
                 </tr>
             </thead>
             <tbody>
             {% for player in players %}
-                <tr>
+                <tr class="{% if not player.drafted %}info{%endif%}">
+                    <td>{{player.rank}}</td>
+                    <td>{% include 'partials/_drafted.html' %}</td>
                     <td>{% include 'partials/_player.html' %}</td>
                     <td>{% include 'partials/_pos_label.html' %}</td>
                     <td>{{player.team.name|upper}}</td>
-                    <td>{{player.rank}}</td>
                     <td>{{player.tot_zscore|round(2)}}</td>
                     <td>{{player.big_zscore|round(2)}}</td>
                     <td>${{player.proj_cost_tot|round(2)}}</td>
                     <td>${{player.proj_cost_big|round(2)}}</td>
+                    <td>${{player.live_cost_tot|round(2)}}</td>
+                    <td>${{player.live_cost_big|round(2)}}</td>
                 </tr>
             {% endfor %}
             </tbody>
           </table>
       </div>
       <div class="tab-pane fade" id="categories">
-          <table class="table table-striped table-hover table-fixed-tab-header">
+          <table class="table table-magic table-striped table-hover table-fixed-tab-header">
               <thead class="header">
               <tr>
+                  <th>Rank</th>
+                  <th>Drafted</th>
                   <th>PLAYER</th>
                   <th>POSITION</th>
-                  <th>Rank</th>
                   {% for key, val in players[0].sorted_zscores %}
                   <th>{{key}} Z Score</th>
                   {% endfor %}
@@ -60,10 +67,11 @@
           </thead>
           <tbody>
           {% for player in players %}
-              <tr>
+              <tr class="{% if not player.drafted %}info{%endif%}">
+                  <td>{{player.rank}}</td>
+                  <td>{% include 'partials/_drafted.html' %}</td>
                   <td>{% include 'partials/_player.html' %}</td>
                   <td>{% include 'partials/_pos_label.html' %}</td>
-                  <td>{{player.rank}}</td>
                   {% for key, val in player.sorted_zscores %}
                   <td>{{val|round(2)}}</td>
                   {% endfor %}

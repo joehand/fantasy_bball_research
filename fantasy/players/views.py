@@ -59,6 +59,15 @@ class Players(FlaskView):
             players = players.filter(drafted=False)
         return render_template('players/index.html', players=players)
 
+    @route('/projections/', endpoint='projections')
+    def projections(self):
+        """ projections page
+        """
+        players = Player.objects()
+        if request.args.get('undrafted'):
+            players = players.filter(drafted=False)
+        return render_template('players/projections.html', players=players)
+
     @route('/zscore/', endpoint='zscore')
     def zscore(self):
         """ zscore page

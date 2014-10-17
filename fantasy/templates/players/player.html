@@ -31,7 +31,7 @@
             <thead>
             <tr>
                 <th></th>
-                {% for key, item in  player.sorted_stats %}
+                {% for key, item in  player.sorted_proj %}
                     <th>{{key}}</th>
                 {% endfor %}
             </tr>
@@ -42,12 +42,14 @@
                     <td>{{item|round(2)}}</td>
                 {% endfor %}
             </tr>
+            {% if player.has_stats %}
             <tr>
                 <th>2014 Stats</th>
                 {% for key, item in player.sorted_stats %}
                     <td>{{item|round(2)}}</td>
                 {% endfor %}
             </tr>
+            {% endif %}
         </table>
     </div>
 

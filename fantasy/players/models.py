@@ -53,6 +53,8 @@ class LeagueStats(db.Document):
     dollars_big_zscore = db.FloatField()
     proj_dollars_tot_zscore = db.FloatField()
     proj_dollars_big_zscore = db.FloatField()
+    live_dollars_tot_zscore = db.FloatField()
+    live_dollars_big_zscore = db.FloatField()
 
 
 class Player(db.Document):
@@ -115,6 +117,15 @@ class Player(db.Document):
         return self.ranks['RANK_BIG']
 
     @property
+    def has_stats(self):
+        if not self.stats or np.isnan(self.sorted_stats[0][1]):
+            if self.stats:
+                self.stats = None
+                self.save()
+            return False
+        return True
+
+    @property
     def tot_zscore(self):
         return self.zscores['AVG']['TOT_AVG_Zscore']
 
@@ -140,9 +151,11 @@ class Player(db.Document):
 
     @property
     def sorted_stats(self):
-        stat_order = ['MIN', 'PTS', 'REB', 'BLK', 'STL', 'AST', '3PM']
-        stats = {key.split('_')[0]:val for key, val in self.stats.items()}
-        return list((i, stats.get(i)) for i in stat_order)
+        if self.stats:
+            stat_order = ['MIN', 'PTS', 'REB', 'BLK', 'STL', 'AST', '3PM']
+            stats = {key.split('_')[0]:val for key, val in self.stats.items()}
+            return list((i, stats.get(i)) for i in stat_order)
+        return None
 
     @property
     def sorted_proj(self):
@@ -174,8 +187,24 @@ class Player(db.Document):
         cost =  int(self.league_stats['dollars_big_zscore'] * self.adj_big_zscore)
         return cost
 
+    @property
+    def live_cost_tot(self):
+        cost = int(self.league_stats['live_dollars_tot_zscore'] * self.adj_tot_zscore)
+        if cost < 1:
+            cost = 1
+        return cost
+
+    @property
+    def live_cost_big(self):
+        cost =  int(self.league_stats['live_dollars_big_zscore'] * self.adj_big_zscore)
+        if cost < 1:
+            cost = 1
+        return cost
+
+
     @classmethod
     def update_draft_values(cls):
+        print('updating draft values for player class')
         drafted = cls.objects(drafted=True)
         dollars_spent = np.sum([play.price for play in drafted])
         dollars_tot_zscore = np.mean([play.dollar_tot_zscore for play in drafted])
@@ -185,6 +214,21 @@ class Player(db.Document):
         stats.dollars_spent = dollars_spent
         stats.dollars_tot_zscore = dollars_tot_zscore
         stats.dollars_big_zscore = dollars_big_zscore
+
+        # update dollar values
+        # assume bench players sell at $1 each
+        dollars_left = TOTAL_DOLLARS - dollars_spent
+        undrafted_players = cls.objects(drafted=False, rank__lte=120)
+
+        live_dollars_tot_zscore = dollars_left/np.sum(
+                [play.adj_tot_zscore for play in undrafted_players])
+
+        live_dollars_big_zscore = dollars_left/np.sum(
+                [play.adj_big_zscore for play in undrafted_players])
+
+        stats.live_dollars_tot_zscore = live_dollars_tot_zscore
+        stats.live_dollars_big_zscore = live_dollars_big_zscore
+
         stats.save()
         return stats
 
@@ -229,7 +273,7 @@ class Player(db.Document):
         """
         data = json.loads(self.to_json())
         data.pop('_cls', None)
-        for key in ['proj_cost_tot', 'proj_cost_big']:
+        for key in ['proj_cost_tot', 'proj_cost_big', 'live_cost_tot', 'live_cost_big']:
             data[key] = getattr(self,key)
         for key, val in list(data.items()):
             if key == 'team':

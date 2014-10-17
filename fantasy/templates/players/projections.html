@@ -1,12 +1,12 @@
 {% extends "frontend/_base.html" %}
-{% set active_page = "players" %}
+{% set active_page = "projections" %}
 
 {%- block content -%}
 
     <div class="page-header">
-    <h1>2014 Stats <small>{{players|length}} Players</small></h1>
+    <h1>2015 Projections <small>{{players|length}} Players</small></h1>
     </div>
-    <table class="table table-magic table-hover table-fixed-header">
+    <table class="table table-magic table-striped table-hover table-fixed-header">
         <thead class="header">
         <tr>
             <th>Rank</th>
@@ -14,25 +14,23 @@
             <th>PLAYER</th>
             <th>POSITION</th>
             <th>TEAM</th>
-            {% for key, item in  players[0].sorted_stats %}
+            {% for key, item in  players[0].sorted_proj %}
                 <th>{{key}}</th>
             {% endfor %}
         </tr>
         </thead>
         <tbody>
         {% for player in players %}
-        {% if player.has_stats %}
         <tr class="{% if not player.drafted %}info{%endif%}">
             <td>{{player.rank}}</td>
             <td>{% include 'partials/_drafted.html' %}</td>
             <td>{% include 'partials/_player.html' %}</td>
             <td>{% include 'partials/_pos_label.html' %}</td>
             <td>{{player.team.name|upper}}</td>
-            {% for key, item in  player.sorted_stats %}
-                <td>{{item|round(2)}}</td>
+            {% for key, item in  player.sorted_proj %}
+                <td>{{item|round(1)}}</td>
             {% endfor %}
         </tr>
-        {% endif %}
         {% endfor %}
         </tbody>
   </table>

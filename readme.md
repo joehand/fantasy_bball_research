@@ -13,7 +13,16 @@ I have data and other iPython analyis notebooks. Maybe I'll add those.
 
 The best part, of course.
 
+### Dashboard
+
+Focused on stats I could look at while drafting:
 ![Dashboard](https://dl.dropboxusercontent.com/u/34000599/imgs/dash.png)
+
+### Player Tables
+
+Can see 2014 data. And projection averages from 4 sources. All tables are sort/filterable. Blue means they aren't drafted.
 ![tables](https://dl.dropboxusercontent.com/u/34000599/imgs/tables.png)
+
+### Z Score Plots!
 ![zscore](https://dl.dropboxusercontent.com/u/34000599/imgs/z_score_ranks.png)
 ![prices](https://dl.dropboxusercontent.com/u/34000599/imgs/prices.png)

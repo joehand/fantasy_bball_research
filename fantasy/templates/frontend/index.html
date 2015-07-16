@@ -1,6 +1,7 @@
 {% extends "frontend/_base.html" %}
 
 {% set num_players = 10 %}
+{% block title %}Dashboard - Fantasy Basketball{% endblock title %}
 
 {%- block content -%}
     <!-- Nav tabs -->
@@ -26,7 +27,7 @@
         <div class="tab-pane active fade in" id="stats">
             <div class="row">
                 <div class="col-sm-12">
-                    <h4>Players (Total: {{data.undraft|length}})</h4>
+                    <h4>Players Available ({{data.undraft|length}} Total)</h4>
                     <div class="progress">
                         {% for pos, val in data['undraft_pos'].items() %}
                         {% if pos == 'PG' %}

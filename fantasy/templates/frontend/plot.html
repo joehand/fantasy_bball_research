@@ -2,6 +2,8 @@
 {% set plot_name = plot_file.split('.')[0] %}
 {% set active_page = 'plot_'+plot_name %}
 
+{% block title %}{{plot_name}} - Fantasy Basketball{% endblock title %}
+
 {%- block content -%}
     <div class="page-header">
     <h1>{{plot_name|upper}} Plot

@@ -1,11 +1,11 @@
 {% extends "frontend/_base.html" %}
 {% set active_page = "draft" %}
-
+{% block title %}Drafted Players - Fantasy Basketball{% endblock title %}
 {%- block content -%}
     <div class="page-header">
     <h1>Drafted Players
         <small>
-        <a href="{{url_for('players.draft', update=True)}}" data-no-instant>(Update Data)</a>
+        <a href="{{url_for('players.draft_update')}}" data-no-instant>(Update Data)</a>
         </small>
     </h1>
     </div>

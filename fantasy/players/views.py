@@ -20,8 +20,8 @@ import pandas as pd
 
 from .models import Player, Team
 from ..frontend.plot import update_all_plots
+from ..constants import *
 
-DRAFT_SHEET_URL = 'https://docs.google.com/spreadsheet/ccc?key=19YpHBaqzp4uccm1q7BgT3ssC_U_TtPaP705xUsHIxN0&gid=1178982124&output=csv'
 
 players = Blueprint('players', __name__, url_prefix='/players')
 
@@ -79,39 +79,49 @@ class Players(FlaskView):
 
     @route('/draft/', endpoint='draft')
     def draft(self):
+        """ Drafted Players
+        """
+        players = Player.objects(drafted=True)
+        return render_template('players/draft.html', players=players)
+
+    @route('/draft_update/', endpoint='draft_update')
+    def draft_update(self):
         """ Add updated draft info to players DB
         """
-        if request.args.get('update'):
-            response = requests.get(DRAFT_SHEET_URL)
-            assert response.status_code == 200, 'Wrong status code'
+        response = requests.get(DRAFT_SHEET_URL)
+        assert response.status_code == 200, 'Wrong status code'
 
-            df = pd.read_csv(io.BytesIO(response.content))
-            df['PRICE'] = df['PRICE'].apply(lambda x: x.replace('$','')).astype(int)
-            df['DRAFTED'] = True
-            try:
-                df.apply(update_draft_data, axis=1)
-                players = Player.objects()
+        df = pd.read_csv(io.BytesIO(response.content))
+        df['PRICE'] = df['PRICE'].apply(lambda x: x.replace('$','')).astype(int)
+        df['DRAFTED'] = True
+        try:
+            df.apply(update_draft_data, axis=1)
+            players = Player.objects()
 
-                # check if everyone is correct in DB (in case of undrafting)
-                for player in players.filter(drafted=True):
-                    if not len(df[df['PLAYER'].str.contains(player.name)]):
-                        player.drafted=False
-                        player.save()
-                        flash('Undrafted {}'.format(player.name))
+            # Update league stats once this is done
+            Player.update_draft_values()
 
-                update_all_plots(players)
-                flash('Success Updating!', 'success')
-            except:
-                #flash('Error Updating', 'danger')
-                pass
+            """ Turn this off for now. Its probably slow!!
+            # check if everyone is correct in DB (in case of undrafting)
+            for player in players.filter(drafted=True):
+                if not len(df[df['PLAYER'].str.contains(player.name)]):
+                    player.drafted=False
+                    player.save()
+                    flash('Undrafted {}'.format(player.name))
+            """
 
-            if request.args.get('next'):
-                return redirect(request.args.get('next'))
+            update_all_plots(players)
+            flash('Success Updating!', 'success')
+        except:
+            #flash('Error Updating', 'danger')
+            pass
+
+        if request.args.get('next'):
+            return redirect(request.args.get('next'))
 
 
         players = Player.objects(drafted=True)
         return render_template('players/draft.html', players=players)
-
 
 
     @route('/<name>/', endpoint='player')

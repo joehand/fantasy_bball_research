@@ -42,7 +42,7 @@
            </div>
            <div class="navbar-collapse collapse">
              <ul class="nav navbar-nav navbar-right">
-                <li><a href="{{url_for('players.draft', update=True, next=request.url_root)}}" data-no-instant>Draft Update</a></li>
+                <li><a href="{{url_for('players.draft_update', next=request.url_root)}}" data-no-instant>Draft Update</a></li>
              </ul>
              <form class="navbar-form navbar-right" action="{{url_for('frontend.form')}}" method="Post">
                 <input type="text" id="player-search" class="typeahead form-control"

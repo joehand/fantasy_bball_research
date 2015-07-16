@@ -14,14 +14,7 @@ import json
 import numpy as np
 
 from ..extensions import db
-
-NUM_TEAMS = 12
-PLAYERS_PER_TEAM = 10
-BENCH_PLAYERS = 2
-TOTAL_DOLLARS = 200 * NUM_TEAMS
-TOTAL_PLAYERS = PLAYERS_PER_TEAM * NUM_TEAMS
-
-STAT_CATS = ['PTS', 'REB', 'BLK', 'AST', 'STL', '3PM']
+from ..constants import *
 
 def flatten_dict(root, prefix_keys=True):
     dicts = [([], root)]
@@ -90,8 +83,6 @@ class Player(db.Document):
         if self.drafted != True:
             self.price = None
 
-        self.rank_big = self.set_rank_big()
-
         if not self.league_stats:
             stats = LeagueStats.objects().first()
             if not stats:
@@ -100,7 +91,11 @@ class Player(db.Document):
             self.league_stats = stats
             self.calc_player_totals()
 
-        self.update_draft_values()
+        # Turn off. Should do it manually when last player is updated.
+        #self.update_draft_values()
+
+        """ These should only be done once
+        self.rank_big = self.set_rank_big()
 
         min_tot_zscore = self.league_stats['min_total_zscore']
         min_big_zscore = self.league_stats['min_big_zscore']
@@ -112,6 +107,7 @@ class Player(db.Document):
             cat_min_zscore = self.league_stats['min_zscores'][cat]
             self.adj_zscores[cat] = (self.zscores['AVG'][cat + '_AVG_Zscore']
                                         + abs(cat_min_zscore))
+        """
 
     def set_rank_big(self):
         return self.ranks['RANK_BIG']
@@ -204,7 +200,7 @@ class Player(db.Document):
 
     @classmethod
     def update_draft_values(cls):
-        print('updating draft values for player class')
+        print('updating draft values for players')
         drafted = cls.objects(drafted=True)
         dollars_spent = np.sum([play.price for play in drafted])
         dollars_tot_zscore = np.mean([play.dollar_tot_zscore for play in drafted])

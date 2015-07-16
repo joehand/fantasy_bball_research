@@ -20,20 +20,16 @@ from flask_classy import FlaskView, route
 import numpy as np
 from pandas import Series, DataFrame
 
-from .plot import create_plot, SAVE_DIR
+from .plot import create_plot
 from ..players import Player, LeagueStats
+from ..constants import *
 
 frontend = Blueprint('frontend', __name__, url_prefix='')
 
-NUM_TEAMS = 12
-STAT_CATS = ['PTS', 'REB', 'BLK','STL', 'AST', '3PM']
-POS = ['PG', 'SG', 'SF', 'PF', 'C']
-DRAFT_POS = ['PG', 'SG', 'SF', 'PF', 'C', 'F/C', 'G', 'UTIL', 'BENCH']
 
 class Frontend(FlaskView):
     """ Frontend View Class
     """
-
     route_base = '/'
 
     @route('/', endpoint='index')
@@ -59,7 +55,6 @@ class Frontend(FlaskView):
             pos_players = drafted.filter(draft_pos=draft_pos)
             if draft_pos == 'BENCH':
                 num_players = NUM_TEAMS * 2
-                print(num_players)
             drafted_remain[draft_pos] = num_players - len(pos_players)
             drafted_per[draft_pos] = 100 * (drafted_remain[draft_pos]/num_players)
 
@@ -96,13 +91,13 @@ class Frontend(FlaskView):
         plot_file = name + '.html'
 
         if (request.args.get('update') or not
-                os.path.exists(os.path.join(SAVE_DIR, plot_file))):
+                os.path.exists(os.path.join(PLOT_SAVE_DIR, plot_file))):
             players = Player.objects()
             plot_file = create_plot(players, plot=name)
 
         plot_file2 = 'undrafted_' + name + '.html'
         if (request.args.get('update') or not
-                        os.path.exists(os.path.join(SAVE_DIR, plot_file2))):
+                        os.path.exists(os.path.join(PLOT_SAVE_DIR, plot_file2))):
             players = Player.objects()
             plot_file2 = create_plot(players, plot='undrafted_' + name)
 
